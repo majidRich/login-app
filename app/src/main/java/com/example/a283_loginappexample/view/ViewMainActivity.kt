@@ -2,25 +2,29 @@ package com.example.a283_loginappexample.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import com.example.a283_loginappexample.androidWrapper.ActivityUtils
 import com.example.a283_loginappexample.databinding.ActivityMainBinding
 import com.example.a283_loginappexample.remote.RetrofitService
 import com.example.a283_loginappexample.remote.dataModel.DefaultModel
+import com.example.a283_loginappexample.remote.dataModel.GetApiModel
 import com.example.a283_loginappexample.remote.ext.ErrorUtils
+import com.example.a283_loginappexample.ui.HomeActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ViewMainActivity(private val context: Context) {
+class ViewMainActivity(private val context: Context, private val finished: ActivityUtils) {
 
     val binding = ActivityMainBinding.inflate(LayoutInflater.from(context))
 
     @SuppressLint("SetTextI18n")
-    fun onClickHandler(error: String) {
+    fun onClickHandler(androidId: String, error: String) {
 
         binding.btnSend.setOnClickListener {
 
@@ -58,6 +62,18 @@ class ViewMainActivity(private val context: Context) {
 
         }
 
+        binding.btnConfirm.setOnClickListener {
+            val email = binding.edtInputEmail.text.toString()
+            val code = binding.edtCode.text.toString()
+            if (code.length < 6) {
+                binding.textInputCode.error = "کد نباید کتر از 6 رفم باشد"
+                return@setOnClickListener
+            }
+            binding.textInputCode.error = null
+
+            verifyCode(androidId, code, email)
+        }
+
     }
 
     private fun sendCodeInEmail(email: String) {
@@ -78,6 +94,37 @@ class ViewMainActivity(private val context: Context) {
                         Toast.makeText(context, ErrorUtils.getError(response), Toast.LENGTH_SHORT).show()
                     }
                 }
+            } catch (e: Exception) {
+                Log.i("SERVER_ERROR", e.message.toString())
+            }
+        }
+
+    }
+
+    private fun verifyCode(androidId: String, code: String, email: String) {
+
+        val service = RetrofitService.service
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = service.verifyCode(androidId, code, email)
+
+            try {
+                if (response.isSuccessful) {
+                    launch(Dispatchers.Main) {
+                        val data = response.body() as GetApiModel
+                        data.api
+                        Toast.makeText(context, "لاگین شما موفقیت آمیز بود", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(context, HomeActivity::class.java)
+                        intent.putExtra("email", email)
+                        context.startActivity(intent)
+                        finished.finished()
+                    }
+                } else {
+                    launch(Dispatchers.Main) {
+                        Toast.makeText(context, ErrorUtils.getError(response), Toast.LENGTH_SHORT).show()
+                    }
+                }
+
             } catch (e: Exception) {
                 Log.i("SERVER_ERROR", e.message.toString())
             }

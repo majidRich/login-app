@@ -1,7 +1,14 @@
 package com.example.a283_loginappexample.model
 
-class ModelMainActivity {
+import android.content.Context
+import com.example.a283_loginappexample.androidWrapper.DeviceInfo
 
-    fun getErrorEmail()="Email Empty"
+class ModelMainActivity(private val context: Context) {
+
+    fun getErrorEmail() = "Email Empty"
+
+    fun getAndroidId(): String {
+        return DeviceInfo.getAndroidId(context)
+    }
 
 }

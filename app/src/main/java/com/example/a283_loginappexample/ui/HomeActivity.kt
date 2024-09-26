@@ -15,7 +15,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding= ActivityHomeBinding.inflate(layoutInflater)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -23,7 +23,8 @@ class HomeActivity : AppCompatActivity() {
             insets
         }
 
-
+        val email = intent.getStringExtra("email")
+        binding.txtEmail.text = email
 
     }
 }

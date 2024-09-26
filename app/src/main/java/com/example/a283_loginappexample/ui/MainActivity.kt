@@ -6,18 +6,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.a283_loginappexample.R
+import com.example.a283_loginappexample.androidWrapper.ActivityUtils
 import com.example.a283_loginappexample.model.ModelMainActivity
 import com.example.a283_loginappexample.presenter.PresenterMainActivity
 import com.example.a283_loginappexample.view.ViewMainActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ActivityUtils {
 
     private lateinit var presenter: PresenterMainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val view = ViewMainActivity(this)
+        val view = ViewMainActivity(this, this)
         setContentView(view.binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -25,8 +26,12 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        presenter = PresenterMainActivity(view, ModelMainActivity())
+        presenter = PresenterMainActivity(view, ModelMainActivity(this))
         presenter.createPresenter()
 
+    }
+
+    override fun finished() {
+        finish()
     }
 }

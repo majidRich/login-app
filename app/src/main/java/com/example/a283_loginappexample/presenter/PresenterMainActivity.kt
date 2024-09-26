@@ -7,7 +7,7 @@ class PresenterMainActivity(private val view: ViewMainActivity, private val mode
 
     fun createPresenter() {
 
-        view.onClickHandler(model.getErrorEmail())
+        view.onClickHandler(model.getAndroidId(),model.getErrorEmail())
 
     }
 
