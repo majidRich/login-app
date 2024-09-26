@@ -11,7 +11,7 @@ interface LoginRepository {
 
     @FormUrlEncoded
     @POST("email/login")
-    fun sendCode(
+    suspend fun sendCode(
         @Field("email") email: String
     ): Response<DefaultModel>
 
