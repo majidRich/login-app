@@ -17,6 +17,7 @@ import com.example.a283_loginappexample.remote.dataModel.GetApiModel
 import com.example.a283_loginappexample.remote.ext.ErrorUtils
 import com.example.a283_loginappexample.ui.HomeActivity
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,26 +31,24 @@ class ViewMainActivity(private val context: Context, private val finished: Activ
 
         binding.btnSend.setOnClickListener {
 
-            val email = binding.edtInputEmail.text.toString()
+            val email = binding.edtInputEmail.text.toString().trim()
 
-            if (email.isEmpty()) {
-                binding.textInputEmail.error = error
-                return@setOnClickListener
+            if (isValidEmail(error, email)) {
+
+                hideKeyboard()
+                sendCodeInEmail(email)
+
+                binding.btnSend.visibility = View.INVISIBLE
+                binding.textInputEmail.visibility = View.INVISIBLE
+
+                binding.txtSendEmail.visibility = View.VISIBLE
+                binding.textInputCode.visibility = View.VISIBLE
+                binding.btnConfirm.visibility = View.VISIBLE
+                binding.txtWrong.visibility = View.VISIBLE
+
+                binding.txtSendEmail.text = "send code to email : $email"
             }
 
-            binding.textInputEmail.error = null
-            hideKeyboard()
-            sendCodeInEmail(email)
-
-            binding.btnSend.visibility = View.INVISIBLE
-            binding.textInputEmail.visibility = View.INVISIBLE
-
-            binding.txtSendEmail.visibility = View.VISIBLE
-            binding.textInputCode.visibility = View.VISIBLE
-            binding.btnConfirm.visibility = View.VISIBLE
-            binding.txtWrong.visibility = View.VISIBLE
-
-            binding.txtSendEmail.text = "send code to email : $email"
         }
 
         binding.txtWrong.setOnClickListener {
@@ -134,20 +133,19 @@ class ViewMainActivity(private val context: Context, private val finished: Activ
 
     }
 
-    private fun isValidEmail(error: String, editText: TextInputEditText): Boolean {
+    private fun isValidEmail(error: String, email: String): Boolean {
 
-        val email = binding.edtInputEmail.text.toString().trim()
         if (email.isEmpty()) {
-            editText.error = error
+            binding.textInputEmail.error = error
             return false
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editText.error = "ساختار ایمیل صحیح نیست"
+            binding.textInputEmail.error = "ساختار ایمیل صحیح نیست"
             return false
         }
 
-        editText.error = null
+        binding.textInputEmail.error = null
         return true
 
     }
