@@ -5,7 +5,7 @@ import com.example.a283_loginappexample.androidWrapper.DeviceInfo
 
 class ModelMainActivity(private val context: Context) {
 
-    fun getErrorEmail() = "Email Empty"
+    fun getErrorEmail() = "ایمیل نباید خالی باشد"
 
     fun getAndroidId(): String {
         return DeviceInfo.getAndroidId(context)

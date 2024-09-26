@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -15,6 +16,7 @@ import com.example.a283_loginappexample.remote.dataModel.DefaultModel
 import com.example.a283_loginappexample.remote.dataModel.GetApiModel
 import com.example.a283_loginappexample.remote.ext.ErrorUtils
 import com.example.a283_loginappexample.ui.HomeActivity
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -129,6 +131,24 @@ class ViewMainActivity(private val context: Context, private val finished: Activ
                 Log.i("SERVER_ERROR", e.message.toString())
             }
         }
+
+    }
+
+    private fun isValidEmail(error: String, editText: TextInputEditText): Boolean {
+
+        val email = binding.edtInputEmail.text.toString().trim()
+        if (email.isEmpty()) {
+            editText.error = error
+            return false
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            editText.error = "ساختار ایمیل صحیح نیست"
+            return false
+        }
+
+        editText.error = null
+        return true
 
     }
 
