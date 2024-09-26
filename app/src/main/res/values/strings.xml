@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">283_LoginAppExample</string>
+    <string name="email">email</string>
+    <string name="send_code">send code</string>
+    <string name="code">code</string>
+    <string name="confirm">confirm</string>
+    <string name="wrong_email">wrong email ?</string>
+    <string name="home_activity">Home Activity</string>
+</resources>
